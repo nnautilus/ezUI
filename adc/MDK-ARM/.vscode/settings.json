@@ -1,0 +1,8 @@
+{
+    "files.associations": {
+        "key.h": "c",
+        "string.h": "c",
+        "menu.h": "c",
+        "menudata.h": "c"
+    }
+}
