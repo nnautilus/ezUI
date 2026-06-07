@@ -1,0 +1,51 @@
+# STM32 / Keil / EIDE build outputs
+*.o
+*.d
+*.crf
+*.o.d
+*.depend
+*.hex
+*.bin
+*.elf
+*.axf
+*.lst
+*.map
+*.htm
+*.dep
+*.lnp
+*.iex
+*.build_log.htm
+*.txprintf
+
+# Keil MDK
+JLinkLog.txt
+JLinkSettings.ini
+*.uvguix.*
+*.scvd
+RTE/
+
+# EIDE
+eide/.cmsis/
+eide/.build/
+
+# Debug
+*.tra
+
+# IDE
+.vs/
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS junk
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# STM32CubeIDE
+Debug/
+.settings/
+.cproject
+.project
