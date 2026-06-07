@@ -678,7 +678,20 @@ char Sys_UART_ReadChar(void) {
 
 ## 📄 License
 
-MIT License — 详见 [LICENSE](LICENSE) 文件。
+ezUI 框架代码以 MIT License 发布 — 详见 [LICENSE](LICENSE) 文件。
+
+## 🙏 第三方代码
+
+本项目使用了以下开源代码，向其作者致谢：
+
+| 文件 | 来源 | 作者 | 协议 |
+|------|------|------|------|
+| `oled.c` / `oled.h` | 波特律动 OLED 驱动 (CH1116) | [keysking](https://space.bilibili.com/51106824) (博哥在学习) | MIT |
+| `font.c` / `font.h` | 波特律动字体库 | [keysking](https://space.bilibili.com/51106824) (博哥在学习) | MIT |
+
+> **取模工具**: 波特律动 LED 取模助手 → [https://led.baud-dance.com](https://led.baud-dance.com)
+
+以上文件在原作者的 MIT License 下使用，原始版权声明保留在各文件头部。
 
 ---
 
