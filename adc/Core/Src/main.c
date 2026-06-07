@@ -19,16 +19,17 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "adc.h"
+#include "dma.h"
 #include "i2c.h"
+#include "usart.h"
 #include "gpio.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "oled.h"
-#include "stdio.h"
-#include "string.h"
-#include "key.h"
+#include "display_hal.h"
+#include "system_hal.h"
 #include "menu.h"
+#include "menuData.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -92,13 +93,14 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
+  MX_DMA_Init();
   MX_ADC1_Init();
   MX_I2C1_Init();
+  MX_USART3_UART_Init();
   /* USER CODE BEGIN 2 */
-  HAL_Delay(5);
-  OLED_Init();
+  Display_Init();
+  Sys_UART_Init();
   Menu_Init(&main_menu);
-  Menu_Render();
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -106,7 +108,7 @@ int main(void)
   while (1)
   { 
     Menu_HandleInput();
-    HAL_Delay(50);
+    Menu_Render();
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
