@@ -1,6 +1,7 @@
 <p align="center">
   <img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License">
   <img src="https://img.shields.io/badge/platform-STM32-green.svg" alt="Platform">
+    <img src="https://img.shields.io/badge/platform-MSPM0G3507-red.svg" alt="Platform">
   <img src="https://img.shields.io/badge/display-OLED-orange.svg" alt="Display">
   <img src="https://img.shields.io/badge/ROM-11.6KB-red.svg" alt="ROM">
   <img src="https://img.shields.io/badge/RAM-3.2KB-yellow.svg" alt="RAM">
@@ -21,9 +22,10 @@
 
 ezUI 把硬件操作完全隔离到 `display_hal.h` 和 `system_hal.h` 两个接口里，菜单逻辑**一行不改**就能迁移。
 
-| 当前平台 | 说明 |
-|---------|------|
-| STM32F1 / F4 / G0 / H7 | 已实现 `display_hal_stm32.c` + `system_hal_stm32.c` |
+| 当前平台 | 实现文件 |
+|---------|---------|
+| STM32F1 / F4 / G0 / H7 | `platform/stm32f103/Src/display_hal_stm32.c` + `system_hal_stm32.c` |
+| **MSPM0G3507 (TI)** | `platform/mspm0g3507/Src/display_hal_g3507.c` + `system_hal_g3507.c` |
 
 > 💡 移植到其他 MCU 只需实现两个文件：`display_hal_xxx.c` + `system_hal_xxx.c`，详见下方 [🔌 移植到其他 MCU](#-移植到其他-mcu)。
 
@@ -174,20 +176,41 @@ int main(void) {
 
 ## 📂 文件结构
 
+仓库按 **core（平台无关） + platform（平台实现）** 组织：
+
 ```
-mycore/                    ← 这就是整个库
-├── inc/
-│   ├── menu.h              ← 核心类型和宏（不用改）
-│   ├── menuData.h          ← 声明你的命令函数 ✏️
-│   ├── display_hal.h       ← 显示抽象层（不用改）
-│   └── system_hal.h        ← 系统抽象层（不用改）
-├── src/
-│   ├── menu.c              ← 菜单引擎（不用改）
-│   ├── menuData.c          ← ⭐ 你的文件——写菜单和命令
-│   ├── display_hal_stm32.c ← STM32 OLED 驱动（不用改）
-│   └── system_hal_stm32.c  ← STM32 串口驱动（不用改）
-└── README.md
+ezUI/
+├── core/                       ← 平台无关，所有 MCU 共用
+│   ├── inc/
+│   │   ├── menu.h              ← 核心类型和宏（不用改）
+│   │   ├── menuData.h          ← 声明你的命令函数 ✏️
+│   │   ├── display_hal.h       ← 显示抽象层（不用改）
+│   │   └── system_hal.h        ← 系统抽象层（不用改）
+│   └── src/
+│       ├── menu.c              ← 菜单引擎（不用改）
+│       └── menuData.c          ← ⭐ 你的文件——写菜单和命令
+│
+├── platform/                   ← 各 MCU 的硬件实现
+│   ├── stm32f103/
+│   │   └── Src/
+│   │       ├── display_hal_stm32.c  ← STM32 OLED 驱动（不用改）
+│   │       └── system_hal_stm32.c   ← STM32 串口驱动（不用改）
+│   └── mspm0g3507/             ← TI MSPM0G3507（CCS 工程）
+│       ├── Inc/  Src/          ← oled.c / sys.c / 两个 HAL 实现
+│       ├── ui.syscfg           ← SysConfig 引脚与外设配置
+│       └── *.ccsproject        ← CCS 工程文件
+│
+└── adc/                        ← 完整示例工程（STM32F103 + CubeMX + Keil）
 ```
+
+**core/ 与 platform/ 的边界：**
+
+| 层 | 内容 | 换平台时要动吗 |
+|---|---|---|
+| `core/` | 菜单引擎、菜单数据、两个 HAL 接口声明 | ❌ 一行不改 |
+| `platform/*/Src/display_hal_*.c` | 把 `Display_*` 接口桥接到具体屏幕驱动 | ✅ 要重写 |
+| `platform/*/Src/system_hal_*.c` | 延时、串口、复位等系统操作 | ✅ 要重写 |
+| `platform/*/Inc/oled.h`、`oled.c` | 屏幕驱动本体（含 GPIO 宏，故属平台层） | ✅ 平台相关 |
 
 **你只需要改两个文件：**
 - `menuData.h` —— 每个命令函数加一行声明
